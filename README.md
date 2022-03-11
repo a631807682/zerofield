@@ -7,7 +7,7 @@ zero field pulgin for gorm.
 1. Update zero field by `Scopes`
 
 ```go
-db.Scopes(zerofield.UpdateScope(zerofield.Config{})).Update(&user)
+db.Scopes(zerofield.UpdateScope(zerofield.Config{})).Updates(&user)
 ```
 
 2. Update zero field by `Hooks`
