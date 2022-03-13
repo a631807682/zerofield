@@ -23,6 +23,9 @@ func UpdateScopes(c ...*Config) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		stmt := db.Statement
 		if cfg.Associations && len(stmt.Selects) == 1 && stmt.Selects[0] == "*" {
+			// for Association
+			// check omit
+
 			// if s := stmt.Schema; s != nil && len(s.Fields) > 0 {
 			// 	for _, field := range s.Fields {
 			// 		// selected := selectedColumns[field.DBName] || selectedColumns[field.Name]
