@@ -9,7 +9,7 @@ import (
 )
 
 // AssertEqualSQL for assert that the sql is equal, this method will ignore quote, and dialect speicals.
-func AssertEqualSQL(t *testing.T, db *gorm.DB, expected string, actually string) {
+func AssertEqualSQL(t *testing.T, db *gorm.DB, expected, actually string) {
 	t.Helper()
 
 	// replace SQL quote, convert into postgresql like ""
