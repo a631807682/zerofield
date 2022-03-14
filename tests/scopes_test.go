@@ -26,11 +26,35 @@ func TestUpdateScopes(t *testing.T) {
 	user.Active = false
 	user.Birthday = nil
 
-	DB.Scopes(scopes.UpdateScopes()).Updates(&user)
+	DB.Scopes(scopes.UpdateZeroFields()).Updates(&user)
 
 	var user1 User
 	DB.First(&user1, user.ID)
 	gut.AssertEqual(t, &user1, &user)
+}
+
+func TestUpdateScopesWithField(t *testing.T) {
+	birthday := time.Now()
+	user := User{
+		Name:     "TestUpdateScopesWithIncludes",
+		Age:      10,
+		Active:   true,
+		Birthday: &birthday,
+	}
+	DB.Create(&user)
+	user.Name = ""
+	user.Age = 0
+	user.Active = false
+	user.Birthday = nil
+
+	DB.Scopes(scopes.UpdateZeroFields("Name")).Updates(&user)
+
+	var user1 User
+	DB.First(&user1, user.ID)
+	gut.AssertObjEqual(t, &user1, &user, "ID", "Name")
+	gut.AssertEqual(t, &user1.Age, 10)
+	gut.AssertEqual(t, &user1.Active, true)
+	gut.AssertEqual(t, &user1.Birthday, &birthday)
 }
 
 func TestUpdateScopesWithSelect(t *testing.T) {
@@ -47,7 +71,7 @@ func TestUpdateScopesWithSelect(t *testing.T) {
 	user.Active = false
 	user.Birthday = nil
 	// update Active only
-	DB.Scopes(scopes.UpdateScopes()).Select("Active").Updates(&user)
+	DB.Scopes(scopes.UpdateZeroFields()).Select("Active").Updates(&user)
 
 	var user1 User
 	DB.First(&user1, user.ID)
@@ -69,7 +93,7 @@ func TestUpdateScopesWithOmit(t *testing.T) {
 	user.Birthday = nil
 
 	// dont update Active only
-	DB.Scopes(scopes.UpdateScopes()).Omit("Active").Updates(&user)
+	DB.Scopes(scopes.UpdateZeroFields()).Omit("Active").Updates(&user)
 
 	var user1 User
 	DB.First(&user1, user.ID)
@@ -89,40 +113,18 @@ func TestUpdateScopesWithSpecifiedField(t *testing.T) {
 	}
 	DB.Create(&user)
 
-	sess := DB.Model(&user).Scopes(scopes.UpdateScopes()).Session(&gorm.Session{})
+	sess := DB.Model(&user).Scopes(scopes.UpdateZeroFields()).Session(&gorm.Session{})
 
+	// donot handle
 	sess.Update("name", "")
 	var user1 User
 	DB.First(&user1, user.ID)
 	gut.AssertEqual(t, &user1.Name, "")
 
+	// donot handle
 	sess.Model(&user).Updates(map[string]interface{}{"age": 0, "active": false})
 	var user2 User
 	DB.First(&user2, user.ID)
 	gut.AssertEqual(t, &user2.Age, 0)
 	gut.AssertEqual(t, &user2.Active, false)
-}
-
-func TestUpdateScopesWithAssociations(t *testing.T) {
-	user := User{
-		Name: "TestUpdateScopesWithAssociations",
-		Account: &Account{
-			Number: "TestUpdateScopesWithAssociations_account",
-		},
-		Pets: []*Pet{
-			{Name: "TestUpdateScopesWithAssociations_pet1"},
-			{Name: "TestUpdateScopesWithAssociations_pet2"},
-		},
-	}
-	DB.Create(&user)
-	user.Account.Number = ""
-	user.Account = nil
-	user.Pets = user.Pets[1:]
-	user.Age = 0
-	// DB.Select(clause.Associations).Save(&user)
-	DB.Scopes(scopes.UpdateScopes(&scopes.Config{
-		Associations: true,
-	})).Save(&user)
-	// DB.Select("Account", "Pets").Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user)
-
 }

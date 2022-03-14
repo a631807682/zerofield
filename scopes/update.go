@@ -1,64 +1,70 @@
 package scopes
 
 import (
+	"reflect"
+
 	"gorm.io/gorm"
 )
 
-type Config struct {
-	Associations bool
+type config struct {
+	// allow update zero field. include all field if empty.
+	Includes []string
 }
 
-var DefaultCfg = &Config{
-	Associations: false,
+// UpdateFields allow update zero cloumns which specified.
+// just work for db.Updates(&model) and db.Save(&model).
+// if cloumns is empty, all field will be save like db.Select("*"")
+func UpdateZeroFields(cloumns ...string) func(db *gorm.DB) *gorm.DB {
+	return update(&config{
+		Includes: cloumns,
+	})
 }
 
-// UpdateScopes allow update zero field.
-// Only work for db.Updates(&model).
-func UpdateScopes(c ...*Config) func(db *gorm.DB) *gorm.DB {
-	cfg := DefaultCfg
-	if len(c) > 0 {
-		cfg = c[0]
-	}
-
+func update(cfg *config) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		stmt := db.Statement
-		if cfg.Associations && len(stmt.Selects) == 1 && stmt.Selects[0] == "*" {
-			// for Association
-			// check omit
-
-			// if s := stmt.Schema; s != nil && len(s.Fields) > 0 {
-			// 	for _, field := range s.Fields {
-			// 		// selected := selectedColumns[field.DBName] || selectedColumns[field.Name]
-			// 		// if selected || (!restricted && field.Readable) {
-			// 		// 	if v, isZero := field.ValueOf(stmt.Context, reflectValue); !isZero || selected {
-			// 		// 		if field.DBName != "" {
-			// 		// 			conds = append(conds, clause.Eq{Column: clause.Column{Table: clause.CurrentTable, Name: field.DBName}, Value: v})
-			// 		// 		} else if field.DataType != "" {
-			// 		// 			conds = append(conds, clause.Eq{Column: clause.Column{Table: clause.CurrentTable, Name: field.Name}, Value: v})
-			// 		// 		}
-			// 		// 	}
-			// 		// }
-			// 	}
-			// }
-			// relation empty
-
-			return db
-		} else if len(stmt.Selects) > 0 {
-			// do not change when selects not empty
+		if len(stmt.Selects) > 0 {
+			// do not change when a field is specified
 			return db
 		}
 
 		if stmt.Dest != nil {
-			// do not change when a field is specified
-			switch stmt.Dest.(type) {
-			case map[string]interface{},
-				*map[string]interface{},
-				[]map[string]interface{},
-				*[]map[string]interface{}:
+			reflectValue := reflect.Indirect(reflect.ValueOf(stmt.Dest))
+			for reflectValue.Kind() == reflect.Ptr {
+				reflectValue = reflectValue.Elem()
+			}
+			if reflectValue.Kind() != reflect.Struct {
+				// not support other dest type
 				return db
 			}
 
-			db.Select("*")
+			if len(cfg.Includes) == 0 {
+				db.Select("*")
+			} else {
+				includeFieldMap := make(map[string]bool)
+				for _, fname := range cfg.Includes {
+					includeFieldMap[fname] = true
+				}
+
+				if stmt.Schema == nil {
+					err := stmt.Parse(stmt.Dest)
+					if err != nil {
+						db.AddError(err)
+						return db
+					}
+				}
+
+				selectColumns := make([]string, 0)
+				for _, f := range stmt.Schema.Fields {
+					_, isZero := f.ValueOf(stmt.Context, reflectValue)
+					if includeFieldMap[f.Name] || !isZero {
+						selectColumns = append(selectColumns, f.Name)
+					}
+				}
+
+				stmt.Selects = selectColumns
+				return db
+			}
 		}
 		return db
 	}
