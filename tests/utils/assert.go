@@ -40,8 +40,8 @@ func replaceQuoteInSQL(db *gorm.DB, sql string) string {
 
 	// convert dialect speical quote into double quote
 	switch db.Dialector.Name() {
-	case "postgres":
-		sql = strings.ReplaceAll(sql, `"`, `"`)
+	// case "postgres":
+	// 	sql = strings.ReplaceAll(sql, `"`, `"`)
 	case "mysql", "sqlite":
 		sql = strings.ReplaceAll(sql, "`", `"`)
 	case "sqlserver":
