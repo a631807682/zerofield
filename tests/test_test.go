@@ -8,10 +8,7 @@ import (
 	"time"
 	. "zerofield/tests/utils"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
-	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -43,43 +40,9 @@ func init() {
 	}
 }
 
+// There is no need to test other databases because there is no driver interaction
 func OpenTestConnection() (db *gorm.DB, err error) {
-	dbDSN := os.Getenv("GORM_DSN")
-	switch os.Getenv("GORM_DIALECT") {
-	case "mysql":
-		log.Println("testing mysql...")
-		if dbDSN == "" {
-			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
-		}
-		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
-	case "postgres":
-		log.Println("testing postgres...")
-		if dbDSN == "" {
-			dbDSN = "user=gorm password=gorm dbname=gorm host=localhost port=9920 sslmode=disable TimeZone=Asia/Shanghai"
-		}
-		db, err = gorm.Open(postgres.New(postgres.Config{
-			DSN:                  dbDSN,
-			PreferSimpleProtocol: true,
-		}), &gorm.Config{})
-	case "sqlserver":
-		// go install github.com/microsoft/go-sqlcmd/cmd/sqlcmd@latest
-		// SQLCMDPASSWORD=LoremIpsum86 sqlcmd -U sa -S localhost:9930
-		// CREATE DATABASE gorm;
-		// GO
-		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
-		// CREATE USER gorm FROM LOGIN gorm;
-		// ALTER SERVER ROLE sysadmin ADD MEMBER [gorm];
-		// GO
-		log.Println("testing sqlserver...")
-		if dbDSN == "" {
-			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
-		}
-		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
-	default:
-		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
-	}
-
+	db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
 	if err != nil {
 		return
 	}
