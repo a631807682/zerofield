@@ -79,6 +79,6 @@ func RunMigrations() error {
 		if !DB.Migrator().HasTable(m) {
 			return fmt.Errorf("Failed to create table for %#v\n", m)
 		}
-
+	}
 	return nil
 }
