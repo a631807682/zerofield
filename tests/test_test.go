@@ -21,27 +21,24 @@ func init() {
 	if DB, err = OpenTestConnection(); err != nil {
 		log.Printf("failed to connect database, got error %v", err)
 		os.Exit(1)
-	} else {
-		sqlDB, err := DB.DB()
-		if err != nil {
-			log.Printf("failed to connect database, got error %v", err)
-			os.Exit(1)
-		}
-
-		err = sqlDB.Ping()
-		if err != nil {
-			log.Printf("failed to ping sqlDB, got error %v", err)
-			os.Exit(1)
-		}
-
-		err = RunMigrations()
-		if err != nil {
-			log.Printf("failed to RunMigrations, got error %v", err)
-			os.Exit(1)
-		}
-		if DB.Dialector.Name() == "sqlite" {
-			DB.Exec("PRAGMA foreign_keys = ON")
-		}
+	}
+	sqlDB, err := DB.DB()
+	if err != nil {
+		log.Printf("failed to connect database, got error %v", err)
+		os.Exit(1)
+	}
+	err = sqlDB.Ping()
+	if err != nil {
+		log.Printf("failed to ping sqlDB, got error %v", err)
+		os.Exit(1)
+	}
+	err = RunMigrations()
+	if err != nil {
+		log.Printf("failed to RunMigrations, got error %v", err)
+		os.Exit(1)
+	}
+	if DB.Dialector.Name() == "sqlite" {
+		DB.Exec("PRAGMA foreign_keys = ON")
 	}
 }
 
