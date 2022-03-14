@@ -19,7 +19,7 @@ Some cases are like we have a structure of 15 fields, and we need to update half
     user.Birthday = nil
 
     // will always update Name,Age even if it's zero field
-    // Active, will not be saved
+    // Active,Birthday will not be saved
     db.Scopes(scopes.UpdateZeroFields("Name","Age")).Updates(&user)
     // if cloumns is empty, all field will be save like db.Select("*"")
     db.Scopes(scopes.UpdateZeroFields()).Updates(&user)
