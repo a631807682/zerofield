@@ -1,6 +1,7 @@
 package tests_test
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -33,7 +34,11 @@ func init() {
 			os.Exit(1)
 		}
 
-		RunMigrations()
+		err = RunMigrations()
+		if err != nil {
+			log.Printf("failed to RunMigrations, got error %v", err)
+			os.Exit(1)
+		}
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
@@ -56,27 +61,24 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	return
 }
 
-func RunMigrations() {
+func RunMigrations() error {
 	var err error
 	allModels := []interface{}{&User{}, &Account{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("Failed to drop table, got error %v\n", err)
 	}
 
 	if err = DB.AutoMigrate(allModels...); err != nil {
-		log.Printf("Failed to auto migrate, but got error %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("Failed to auto migrate, but got error %v\n", err)
 	}
 
 	for _, m := range allModels {
 		if !DB.Migrator().HasTable(m) {
-			log.Printf("Failed to create table for %#v\n", m)
-			os.Exit(1)
+			return fmt.Errorf("Failed to create table for %#v\n", m)
 		}
-	}
-	DB = DB.Debug()
+
+	return nil
 }
