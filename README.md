@@ -2,15 +2,18 @@
 
 zero field pulgin for gorm.
 
-# Usage
-
-1. `UpdateZeroFields` update event it's zero field
+# Desc
 
 > When update with struct, GORM will only update non-zero fields, you might want to use map to update attributes or use Select to specify fields to update
 > [Updates-multiple-columns](https://gorm.io/docs/update.html#Updates-multiple-columns)
 
 This works in most cases, but there are times when we just want to allow individual 0 values to be updated, and neither `map[string]interface` nor `Select` is very friendly to us.
-Some cases are like we have a structure of 15 fields, and we need to update half of them, but that half might contain one or two zero values.
+
+# Usage
+
+## Scopes
+
+1. `UpdateZeroFields` update event it's zero field
 
 ```go
     user.Name = ""
