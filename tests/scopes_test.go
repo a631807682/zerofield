@@ -130,7 +130,6 @@ func TestUpdateScopesWithSpecifiedField(t *testing.T) {
 }
 
 func TestUpdateScopesWithBeforeUpdateHooks(t *testing.T) {
-	DB = DB.Debug()
 	foo := &Foo{
 		RestIfLonggerThan1Char: "1",
 		NotEmpty:               "notempty",
