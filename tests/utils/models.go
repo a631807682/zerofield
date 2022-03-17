@@ -13,7 +13,6 @@ type User struct {
 	Age      uint `gorm:"default:18"`
 	Birthday *time.Time
 	Account  *Account
-	Pets     []*Pet
 	Active   bool
 }
 
@@ -23,8 +22,21 @@ type Account struct {
 	Number string
 }
 
-type Pet struct {
+type Foo struct {
 	gorm.Model
-	UserID *uint
-	Name   string
+	NotEmpty               string
+	RestIfLonggerThan1Char string
+}
+
+const FooNotEmptyDefVal = "not empty"
+
+func (f *Foo) BeforeUpdate(tx *gorm.DB) (err error) {
+	if f.NotEmpty == "" {
+		f.NotEmpty = FooNotEmptyDefVal
+	}
+
+	if len(f.RestIfLonggerThan1Char) > 1 {
+		f.RestIfLonggerThan1Char = ""
+	}
+	return
 }

@@ -60,7 +60,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() error {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}}
+	allModels := []interface{}{&User{}, &Account{}, &Foo{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 

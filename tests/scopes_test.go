@@ -128,3 +128,22 @@ func TestUpdateScopesWithSpecifiedField(t *testing.T) {
 	gut.AssertEqual(t, &user2.Age, 0)
 	gut.AssertEqual(t, &user2.Active, false)
 }
+
+func TestUpdateScopesWithBeforeUpdateHooks(t *testing.T) {
+	DB = DB.Debug()
+	foo := &Foo{
+		RestIfLonggerThan1Char: "1",
+		NotEmpty:               "notempty",
+	}
+
+	DB.Create(&foo)
+
+	foo.RestIfLonggerThan1Char = "morethanone"
+	foo.NotEmpty = ""
+	DB.Scopes(scopes.UpdateZeroFields("RestIfLonggerThan1Char")).Updates(&foo)
+
+	var foo1 Foo
+	DB.First(&foo1, foo.ID)
+	gut.AssertEqual(t, &foo1.RestIfLonggerThan1Char, "")
+	gut.AssertEqual(t, &foo1.NotEmpty, FooNotEmptyDefVal)
+}

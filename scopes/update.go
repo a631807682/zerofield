@@ -41,31 +41,43 @@ func update(cfg *config) func(db *gorm.DB) *gorm.DB {
 			if len(cfg.Includes) == 0 {
 				db.Select("*")
 			} else {
-				includeFieldMap := make(map[string]bool)
-				for _, fname := range cfg.Includes {
-					includeFieldMap[fname] = true
-				}
-
-				if stmt.Schema == nil {
-					err := stmt.Parse(stmt.Dest)
-					if err != nil {
-						db.AddError(err)
-						return db
-					}
-				}
-
-				selectColumns := make([]string, 0)
-				for _, f := range stmt.Schema.Fields {
-					_, isZero := f.ValueOf(stmt.Context, reflectValue)
-					if includeFieldMap[f.Name] || !isZero {
-						selectColumns = append(selectColumns, f.Name)
-					}
-				}
-
-				stmt.Selects = selectColumns
+				replaceSelects(db, cfg.Includes)
 				return db
 			}
 		}
 		return db
 	}
+}
+
+func replaceSelects(db *gorm.DB, includes []string) {
+	updateCallback := db.Callback().Update()
+	beforeUpdateHandler := updateCallback.Get("gorm:before_update")
+
+	// replace selects after before update hooks
+	var replaceBeforeUpdateHandler = func(handler func(*gorm.DB), includes []string) func(*gorm.DB) {
+		return func(tx *gorm.DB) {
+			handler(tx)
+
+			includeFieldMap := make(map[string]bool)
+			for _, fname := range includes {
+				includeFieldMap[fname] = true
+			}
+
+			stmt := tx.Statement
+			reflectValue := stmt.ReflectValue
+			selectColumns := make([]string, 0)
+			for _, f := range stmt.Schema.Fields {
+				_, isZero := f.ValueOf(stmt.Context, reflectValue)
+				if includeFieldMap[f.Name] || !isZero {
+					selectColumns = append(selectColumns, f.Name)
+				}
+			}
+			stmt.Selects = selectColumns
+			updateCallback.Replace("gorm:before_update", handler)
+		}
+	}
+
+	updateCallback.Replace("gorm:before_update",
+		replaceBeforeUpdateHandler(beforeUpdateHandler, includes),
+	)
 }
