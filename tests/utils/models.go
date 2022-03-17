@@ -30,7 +30,7 @@ type Foo struct {
 
 const FooNotEmptyDefVal = "not empty"
 
-func (f *Foo) BeforeUpdate(tx *gorm.DB) (err error) {
+func (f *Foo) BeforeUpdate(_ *gorm.DB) (err error) {
 	if f.NotEmpty == "" {
 		f.NotEmpty = FooNotEmptyDefVal
 	}
