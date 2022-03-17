@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"zerofield/scopes"
+	"zerofield"
 
 	. "zerofield/tests/utils"
 
@@ -26,7 +26,7 @@ func TestUpdateScopes(t *testing.T) {
 	user.Active = false
 	user.Birthday = nil
 
-	DB.Scopes(scopes.UpdateZeroFields()).Updates(&user)
+	DB.Scopes(zerofield.UpdateScopes()).Updates(&user)
 
 	var user1 User
 	DB.First(&user1, user.ID)
@@ -47,7 +47,7 @@ func TestUpdateScopesWithField(t *testing.T) {
 	user.Active = false
 	user.Birthday = nil
 
-	DB.Scopes(scopes.UpdateZeroFields("Name")).Updates(&user)
+	DB.Scopes(zerofield.UpdateScopes("Name")).Updates(&user)
 
 	var user1 User
 	DB.First(&user1, user.ID)
@@ -71,7 +71,7 @@ func TestUpdateScopesWithSelect(t *testing.T) {
 	user.Active = false
 	user.Birthday = nil
 	// update Active only
-	DB.Scopes(scopes.UpdateZeroFields()).Select("Active").Updates(&user)
+	DB.Scopes(zerofield.UpdateScopes()).Select("Active").Updates(&user)
 
 	var user1 User
 	DB.First(&user1, user.ID)
@@ -93,7 +93,7 @@ func TestUpdateScopesWithOmit(t *testing.T) {
 	user.Birthday = nil
 
 	// dont update Active only
-	DB.Scopes(scopes.UpdateZeroFields()).Omit("Active").Updates(&user)
+	DB.Scopes(zerofield.UpdateScopes()).Omit("Active").Updates(&user)
 
 	var user1 User
 	DB.First(&user1, user.ID)
@@ -113,7 +113,7 @@ func TestUpdateScopesWithSpecifiedField(t *testing.T) {
 	}
 	DB.Create(&user)
 
-	sess := DB.Model(&user).Scopes(scopes.UpdateZeroFields()).Session(&gorm.Session{})
+	sess := DB.Model(&user).Scopes(zerofield.UpdateScopes()).Session(&gorm.Session{})
 
 	// donot handle
 	sess.Update("name", "")
@@ -139,7 +139,7 @@ func TestUpdateScopesWithBeforeUpdateHooks(t *testing.T) {
 
 	foo.RestIfLonggerThan1Char = "morethanone"
 	foo.NotEmpty = ""
-	DB.Scopes(scopes.UpdateZeroFields("RestIfLonggerThan1Char")).Updates(&foo)
+	DB.Scopes(zerofield.UpdateScopes("RestIfLonggerThan1Char")).Updates(&foo)
 
 	var foo1 Foo
 	DB.First(&foo1, foo.ID)

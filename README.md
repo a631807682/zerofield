@@ -1,4 +1,4 @@
-# zerofield(WIP)
+# zerofield
 
 zero field pulgin for gorm.
 
@@ -13,7 +13,7 @@ This works in most cases, but there are times when we just want to allow individ
 
 ## Scopes
 
-1. `UpdateZeroFields` update event it's zero field
+1. `UpdateScopes` update event it's zero field
 
 ```go
     user.Name = ""
@@ -23,7 +23,21 @@ This works in most cases, but there are times when we just want to allow individ
 
     // will always update Name,Age even if it's zero field
     // Active,Birthday will not be saved
-    db.Scopes(scopes.UpdateZeroFields("Name","Age")).Updates(&user)
+    db.Scopes(zerofield.UpdateScopes("Name","Age")).Updates(&user)
     // if cloumns is empty, all field will be save like db.Select("*"")
-    db.Scopes(scopes.UpdateZeroFields()).Updates(&user)
+    db.Scopes(zerofield.UpdateScopes()).Updates(&user)
+```
+
+2. `NewPlugin` force save by gorm tag `zf_force_update`
+   > This is a dangerous option, usually `UpdateScopes` is enough
+
+```go
+    type Foo struct{
+        Bar string `gorm:zf_force_update;`// will always update even if it's zero field
+    }
+
+	db.Use(zerofield.NewPlugin())
+
+    foo.Bar = ""
+    db.Updates(&foo)
 ```

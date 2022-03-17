@@ -26,6 +26,8 @@ type Foo struct {
 	gorm.Model
 	NotEmpty               string
 	RestIfLonggerThan1Char string
+	SwitchOn               bool `gorm:"zf_force_update:true"`
+	SwitchStatus           int8 `gorm:"zf_force_update"`
 }
 
 const FooNotEmptyDefVal = "not empty"
