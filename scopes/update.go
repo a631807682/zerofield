@@ -50,8 +50,8 @@ func update(cfg *config) func(db *gorm.DB) *gorm.DB {
 }
 
 func replaceSelects(db *gorm.DB, includes []string) {
-	updateCallback := db.Callback().Update()
-	beforeUpdateHandler := updateCallback.Get("gorm:before_update")
+	updateProcessor := db.Callback().Update()
+	beforeUpdateHandler := updateProcessor.Get("gorm:before_update")
 
 	// replace selects after before update hooks
 	var replaceBeforeUpdateHandler = func(handler func(*gorm.DB), includes []string) func(*gorm.DB) {
@@ -73,11 +73,11 @@ func replaceSelects(db *gorm.DB, includes []string) {
 				}
 			}
 			stmt.Selects = selectColumns
-			updateCallback.Replace("gorm:before_update", handler)
+			updateProcessor.Replace("gorm:before_update", handler)
 		}
 	}
 
-	updateCallback.Replace("gorm:before_update",
+	updateProcessor.Replace("gorm:before_update",
 		replaceBeforeUpdateHandler(beforeUpdateHandler, includes),
 	)
 }
