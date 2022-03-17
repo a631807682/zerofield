@@ -15,29 +15,32 @@ This works in most cases, but there are times when we just want to allow individ
 
 1. `UpdateScopes` update event it's zero field
 
-```go
-    user.Name = ""
-    user.Age = 0
-    user.Active = false
-    user.Birthday = nil
+   ```go
+       user.Name = ""
+       user.Age = 0
+       user.Active = false
+       user.Birthday = nil
 
-    // will always update Name,Age even if it's zero field
-    // Active,Birthday will not be saved
-    db.Scopes(zerofield.UpdateScopes("Name","Age")).Updates(&user)
-    // if cloumns is empty, all field will be save like db.Select("*"")
-    db.Scopes(zerofield.UpdateScopes()).Updates(&user)
-```
+       // will always update Name,Age even if it's zero field
+       // Active,Birthday will not be saved
+       db.Scopes(zerofield.UpdateScopes("Name","Age")).Updates(&user)
+       // if cloumns is empty, all field will be save like db.Select("*"")
+       db.Scopes(zerofield.UpdateScopes()).Updates(&user)
+   ```
 
-2. `NewPlugin` force save by gorm tag `zf_force_update`
+## Plugins
+
+1. `NewPlugin` force save by gorm tag `zf_force_update`
+
    > This is a dangerous option, usually `UpdateScopes` is enough
 
-```go
-    type Foo struct{
-        Bar string `gorm:zf_force_update;`// will always update even if it's zero field
-    }
+   ```go
+       type Foo struct{
+           Bar string `gorm:zf_force_update;`// will always update even if it's zero field
+       }
 
-	db.Use(zerofield.NewPlugin())
+       db.Use(zerofield.NewPlugin())
 
-    foo.Bar = ""
-    db.Updates(&foo)
-```
+       foo.Bar = ""
+       db.Updates(&foo)
+   ```
