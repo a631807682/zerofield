@@ -10,11 +10,11 @@ const ForceUpdateTag = "ZF_FORCE_UPDATE"
 
 type ZeroFieldPlugin struct{}
 
-func (s *ZeroFieldPlugin) Name() string {
+func (*ZeroFieldPlugin) Name() string {
 	return "gorm:zerofield"
 }
 
-func (s *ZeroFieldPlugin) Initialize(db *gorm.DB) error {
+func (*ZeroFieldPlugin) Initialize(db *gorm.DB) error {
 	updateProcessor := db.Callback().Update()
 	register := updateProcessor.Before("gorm:update").After("gorm:save_before_associations")
 
