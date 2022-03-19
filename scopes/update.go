@@ -56,6 +56,7 @@ func replaceSelects(db *gorm.DB, includes []string) {
 	// replace selects after before update hooks
 	var replaceBeforeUpdateHandler = func(handler func(*gorm.DB), includes []string) func(*gorm.DB) {
 		return func(tx *gorm.DB) {
+			defer updateProcessor.Replace("gorm:before_update", handler)
 			handler(tx)
 
 			includeFieldMap := make(map[string]bool)
@@ -73,7 +74,6 @@ func replaceSelects(db *gorm.DB, includes []string) {
 				}
 			}
 			stmt.Selects = selectColumns
-			updateProcessor.Replace("gorm:before_update", handler)
 		}
 	}
 

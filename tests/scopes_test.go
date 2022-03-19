@@ -146,3 +146,31 @@ func TestUpdateScopesWithBeforeUpdateHooks(t *testing.T) {
 	gut.AssertEqual(t, &foo1.RestIfLonggerThan1Char, "")
 	gut.AssertEqual(t, &foo1.NotEmpty, FooNotEmptyDefVal)
 }
+
+func TestUpdateScopesWithSession(t *testing.T) {
+	DB = DB.Debug()
+	birthday := time.Now()
+	user := User{
+		Name:     "TestUpdateScopesWithInterface",
+		Age:      10,
+		Active:   true,
+		Birthday: &birthday,
+	}
+	DB.Create(&user)
+
+	sess := DB.Model(&user).Scopes(zerofield.UpdateScopes("Name", "Age")).Session(&gorm.Session{})
+
+	user.Name = ""
+	sess.Updates(&user)
+
+	var user1 User
+	DB.First(&user1, user.ID)
+	gut.AssertEqual(t, &user1, &user)
+
+	user.Age = 0
+	sess.Updates(&user)
+
+	var user2 User
+	DB.First(&user2, user.ID)
+	gut.AssertEqual(t, &user2, &user)
+}
