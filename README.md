@@ -2,6 +2,8 @@
 
 zero field pulgin for gorm.
 
+[![test status](https://github.com/a631807682/zerofield/workflows/tests/badge.svg?branch=master "test status")](https://github.com/a631807682/zerofield/actions)
+
 # Desc
 
 > When update with struct, GORM will only update non-zero fields, you might want to use map to update attributes or use Select to specify fields to update
