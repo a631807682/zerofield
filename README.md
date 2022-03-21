@@ -3,6 +3,7 @@
 zero field pulgin for gorm.
 
 [![test status](https://github.com/a631807682/zerofield/workflows/tests/badge.svg?branch=master "test status")](https://github.com/a631807682/zerofield/actions)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 # Desc
 
