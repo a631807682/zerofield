@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/a631807682/zerofield"
 	. "github.com/a631807682/zerofield/tests/utils"
 
 	"gorm.io/driver/sqlite"
@@ -56,6 +57,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db.Logger = db.Logger.LogMode(logger.Silent)
 	}
 
+	db = db.Debug()
+	// use plugin
+	db.Use(zerofield.NewPlugin())
 	return
 }
 

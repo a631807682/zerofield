@@ -2,7 +2,6 @@ package plugins
 
 import (
 	"gorm.io/gorm"
-	gut "gorm.io/gorm/utils"
 )
 
 // `gorm:zf_force_update:true`
@@ -24,16 +23,27 @@ func (*ZeroFieldPlugin) Initialize(db *gorm.DB) error {
 			return
 		}
 
-		selectColumns := make([]string, 0)
-		for _, f := range stmt.Schema.Fields {
-			if f.Updatable {
-				_, isZero := f.ValueOf(stmt.Context, stmt.ReflectValue)
-				if !isZero || gut.CheckTruth(f.TagSettings[ForceUpdateTag]) {
-					selectColumns = append(selectColumns, f.Name)
+		if val, ok := tx.Get("zerofield:includes"); ok {
+			if includes, ok := val.([]string); ok && len(includes) > 0 {
+				includeFieldMap := make(map[string]bool)
+				for _, fname := range includes {
+					includeFieldMap[fname] = true
 				}
+
+				stmt := tx.Statement
+				reflectValue := stmt.ReflectValue
+				selectColumns := make([]string, 0)
+				for _, f := range stmt.Schema.Fields {
+					if f.Updatable {
+						_, isZero := f.ValueOf(stmt.Context, reflectValue)
+						if includeFieldMap[f.Name] || !isZero {
+							selectColumns = append(selectColumns, f.Name)
+						}
+					}
+				}
+				stmt.Selects = selectColumns
 			}
 		}
-		stmt.Selects = selectColumns
 	})
 	return nil
 }

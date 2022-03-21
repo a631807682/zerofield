@@ -175,7 +175,6 @@ func TestUpdateScopesWithSession(t *testing.T) {
 }
 
 func TestUpdateScopesWithPermissionField(t *testing.T) {
-	DB = DB.Debug()
 	user := User{
 		Name:      "TestUpdateScopesWithPermissionField",
 		NotUpdate: "NotUpdate",
@@ -188,4 +187,29 @@ func TestUpdateScopesWithPermissionField(t *testing.T) {
 	var user1 User
 	DB.First(&user1, user.ID)
 	gut.AssertEqual(t, &user1.NotUpdate, "NotUpdate")
+}
+
+func TestUpdateScopesWithMutiTimes(t *testing.T) {
+	birthday := time.Now()
+	user := User{
+		Name:     "TestUpdateScopesWithMutiTimes",
+		Age:      10,
+		Active:   true,
+		Birthday: &birthday,
+	}
+	DB.Create(&user)
+
+	user.Name = ""
+	DB.Model(&user).Scopes(zerofield.UpdateScopes("Name")).Updates(&user)
+
+	var user1 User
+	DB.First(&user1, user.ID)
+	gut.AssertEqual(t, &user1, &user)
+
+	user.Age = 0
+	DB.Model(&user).Scopes(zerofield.UpdateScopes("Age")).Updates(&user)
+
+	var user2 User
+	DB.First(&user2, user.ID)
+	gut.AssertEqual(t, &user2, &user)
 }
