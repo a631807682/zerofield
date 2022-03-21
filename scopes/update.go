@@ -68,9 +68,11 @@ func replaceSelects(db *gorm.DB, includes []string) {
 			reflectValue := stmt.ReflectValue
 			selectColumns := make([]string, 0)
 			for _, f := range stmt.Schema.Fields {
-				_, isZero := f.ValueOf(stmt.Context, reflectValue)
-				if includeFieldMap[f.Name] || !isZero {
-					selectColumns = append(selectColumns, f.Name)
+				if f.Updatable {
+					_, isZero := f.ValueOf(stmt.Context, reflectValue)
+					if includeFieldMap[f.Name] || !isZero {
+						selectColumns = append(selectColumns, f.Name)
+					}
 				}
 			}
 			stmt.Selects = selectColumns

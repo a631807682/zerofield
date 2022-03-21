@@ -9,11 +9,12 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string
-	Age      uint `gorm:"default:18"`
-	Birthday *time.Time
-	Account  *Account
-	Active   bool
+	Name      string
+	Age       uint `gorm:"default:18"`
+	Birthday  *time.Time
+	Account   *Account
+	Active    bool
+	NotUpdate string `gorm:"<-:create"`
 }
 
 type Account struct {

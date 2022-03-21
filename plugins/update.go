@@ -26,9 +26,11 @@ func (*ZeroFieldPlugin) Initialize(db *gorm.DB) error {
 
 		selectColumns := make([]string, 0)
 		for _, f := range stmt.Schema.Fields {
-			_, isZero := f.ValueOf(stmt.Context, stmt.ReflectValue)
-			if !isZero || gut.CheckTruth(f.TagSettings[ForceUpdateTag]) {
-				selectColumns = append(selectColumns, f.Name)
+			if f.Updatable {
+				_, isZero := f.ValueOf(stmt.Context, stmt.ReflectValue)
+				if !isZero || gut.CheckTruth(f.TagSettings[ForceUpdateTag]) {
+					selectColumns = append(selectColumns, f.Name)
+				}
 			}
 		}
 		stmt.Selects = selectColumns
