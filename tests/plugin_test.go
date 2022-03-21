@@ -2,8 +2,9 @@ package tests_test
 
 import (
 	"testing"
-	"zerofield"
-	. "zerofield/tests/utils"
+
+	"github.com/a631807682/zerofield"
+	. "github.com/a631807682/zerofield/tests/utils"
 
 	gut "gorm.io/gorm/utils/tests"
 )

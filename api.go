@@ -1,8 +1,8 @@
 package zerofield
 
 import (
-	"zerofield/plugins"
-	"zerofield/scopes"
+	"github.com/a631807682/zerofield/plugins"
+	"github.com/a631807682/zerofield/scopes"
 )
 
 // UpdateScopes update zero value field by cloumns

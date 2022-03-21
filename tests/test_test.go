@@ -7,7 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-	. "zerofield/tests/utils"
+
+	. "github.com/a631807682/zerofield/tests/utils"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

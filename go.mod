@@ -1,4 +1,4 @@
-module zerofield
+module github.com/a631807682/zerofield
 
 go 1.17
 

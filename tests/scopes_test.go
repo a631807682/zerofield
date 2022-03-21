@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"zerofield"
+	"github.com/a631807682/zerofield"
 
-	. "zerofield/tests/utils"
+	. "github.com/a631807682/zerofield/tests/utils"
 
 	"gorm.io/gorm"
 	gut "gorm.io/gorm/utils/tests"
