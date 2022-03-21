@@ -16,9 +16,9 @@ This works in most cases, but there are times when we just want to allow individ
 
 1. `NewPlugin` register plugin to `gorm.DB`
 
-```go
-    db.Use(zerofield.NewPlugin())
-```
+   ```go
+       db.Use(zerofield.NewPlugin())
+   ```
 
 2. `UpdateScopes` update event it's zero field
 

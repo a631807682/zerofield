@@ -3,7 +3,6 @@ module github.com/a631807682/zerofield
 go 1.17
 
 require (
-	gorm.io/driver/sqlite v1.3.1
 	gorm.io/gorm v1.23.2
 )
 
