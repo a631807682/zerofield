@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// AssertEqualSQL for assert that the sql is equal, this method will ignore quote, and dialect speicals.
+// AssertEqualSQL for assert that the sql is equal, this method will ignore quote, and dialect specials.
 func AssertEqualSQL(t *testing.T, db *gorm.DB, expected, actually string) {
 	t.Helper()
 
@@ -38,7 +38,7 @@ func replaceQuoteInSQL(db *gorm.DB, sql string) string {
 	// convert single quote into double quote
 	sql = strings.ReplaceAll(sql, `'`, `"`)
 
-	// convert dialect speical quote into double quote
+	// convert dialect special quote into double quote
 	switch db.Dialector.Name() {
 	// case "postgres":
 	// 	sql = strings.ReplaceAll(sql, `"`, `"`)
