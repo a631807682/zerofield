@@ -11,7 +11,7 @@ type config struct {
 	Includes []string
 }
 
-// UpdateFields allow update zero cloumns which specified.
+// UpdateZeroFields allow update zero cloumns which specified.
 // just work for db.Updates(&model) and db.Save(&model).
 // if cloumns is empty, all field will be save like db.Select("*"")
 func UpdateZeroFields(cloumns ...string) func(db *gorm.DB) *gorm.DB {
