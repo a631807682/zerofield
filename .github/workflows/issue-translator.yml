@@ -17,3 +17,4 @@ jobs:
           # Not required, suggest not input, action will get name from BOT_GITHUB_TOKEN
           # If input, BOT name must match github token
           IS_MODIFY_TITLE: true
+          
