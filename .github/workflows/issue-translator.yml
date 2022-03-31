@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: tomsun28/issues-translate-action@v2.6
+      - uses: a631807682/issues-translate-chinese-action@v1.0.2
         with:
           BOT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
           # Required, input your bot github token
