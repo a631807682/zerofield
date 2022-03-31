@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: tomsun28/issues-translate-action@v2.6
         with:
-          BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }} 
+          BOT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
           # Required, input your bot github token
           BOT_LOGIN_NAME: Issues-translate-bot    
           # Not required, suggest not input, action will get name from BOT_GITHUB_TOKEN
