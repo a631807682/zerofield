@@ -1,6 +1,6 @@
 # zerofield
 
-zero field pulgin for gorm.
+gorm plugin for allow update zero value field.
 
 [![go report card](https://goreportcard.com/badge/github.com/a631807682/zerofield "go report card")](https://goreportcard.com/report/github.com/a631807682/zerofield)
 [![test status](https://github.com/a631807682/zerofield/workflows/tests/badge.svg?branch=master "test status")](https://github.com/a631807682/zerofield/actions)
