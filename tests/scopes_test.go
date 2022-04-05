@@ -54,7 +54,7 @@ func TestUpdateScopesWithField(t *testing.T) {
 	gut.AssertObjEqual(t, &user1, &user, "ID", "Name")
 	gut.AssertEqual(t, &user1.Age, 10)
 	gut.AssertEqual(t, &user1.Active, true)
-	gut.AssertEqual(t, &user1.Birthday, &birthday)
+	gut.AssertEqual(t, user1.Birthday, &birthday)
 }
 
 func TestUpdateScopesWithSelect(t *testing.T) {
