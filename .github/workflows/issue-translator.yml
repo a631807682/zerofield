@@ -1,20 +1,20 @@
-name: 'issue-translator'
-on: 
-  issue_comment: 
+name: 'issues-translator'
+on:
+  issue_comment:
     types: [created]
-  issues: 
+  issues:
     types: [opened]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: a631807682/issues-translate-chinese-action@v1.0.3
+      - uses: a631807682/issues-translator@v1.2.0
         with:
-          BOT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          # Required, input your bot github token
-          BOT_LOGIN_NAME: Issues-translate-bot    
-          # Not required, suggest not input, action will get name from BOT_GITHUB_TOKEN
-          # If input, BOT name must match github token
-          IS_MODIFY_TITLE: true
-          
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          match-languages: cmn
+          min-match-percent: 0.05
+          modify-title: true
+          modify-body: true
+          modify-comment: true
+          comment-note: Bot detected the issue body's language is not English, translate it automatically.
