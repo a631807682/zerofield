@@ -9,11 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: a631807682/issues-translator@v1.2.0
+      - uses: a631807682/issues-translator@v1.2.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           match-languages: cmn
-          min-match-percent: 0.05
           modify-title: true
           modify-body: true
           modify-comment: true
