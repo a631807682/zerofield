@@ -6,6 +6,7 @@ gorm plugin for allow update zero value field.
 [![test status](https://github.com/a631807682/zerofield/workflows/tests/badge.svg?branch=master "test status")](https://github.com/a631807682/zerofield/actions)
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/github.com/a631807682/zerofield)
+![visitor badge](https://visitor-badge.glitch.me/badge?page_id=a631807682.zerofield)
 
 # Desc
 
