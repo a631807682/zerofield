@@ -6,7 +6,7 @@ replace github.com/a631807682/zerofield => ../
 
 require (
 	github.com/a631807682/zerofield v0.0.0-00010101000000-000000000000
-	gorm.io/driver/sqlite v1.3.4
+	gorm.io/driver/sqlite v1.3.6
 	gorm.io/gorm v1.23.9
 )
 
