@@ -6,12 +6,12 @@ replace github.com/a631807682/zerofield => ../
 
 require (
 	github.com/a631807682/zerofield v0.0.0-00010101000000-000000000000
-	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.9
+	gorm.io/driver/sqlite v1.4.2
+	gorm.io/gorm v1.24.0
 )
 
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/mattn/go-sqlite3 v1.14.12 // indirect
+	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 )
